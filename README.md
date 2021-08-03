@@ -6,9 +6,9 @@ This repository contains the various code I've written throughout my college car
 
 ## Python Subdirectory
 
-* [Intro to NLTK](/Python/NLTK_intro/README.md)
-* [Part of Speech Tagging](/Python/POS_tagging/README.md)
-* [Text Classification](/Python/text_classification/README.md)
+* [Intro to NLTK](/Python/NLTK_intro/)
+* [Part of Speech Tagging](/Python/POS_tagging/)
+* [Text Classification](/Python/text_classification/)
 
 </br></br>
 
