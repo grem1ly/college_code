@@ -12,7 +12,7 @@ Product Reviews                                                  |  Reuters
 
 ### The Analysis
 
-Given the `product_reviews_1` and the `reuters` corpora, I suspected that the word/token "press" would predominantly be tagged as a verb within the `product_reviews_1` corpus and a noun within the `reuters` corpus. This was based on the idea that product reviews might refer to "press" more often as an instruction (e.g. press the button), and that the news might refer to "press" more often as the entity for cultivating news. The resulting concordance tables for each corpus confirms my suspicions. "Press" is more frequently a verb in the `product_reviews_1` corpus and more frequently a noun in the `reuters` corpus.
+Given the `product_reviews_1` and the `reuters` corpora, I suspected that the word/token "press" would predominantly be tagged as a verb within the `product_reviews_1` corpus and a noun within the `reuters` corpus. This was based on the idea that product reviews might refer to "press" more often as an instruction (e.g. press the button), and that the news might refer to "press" more often as the entity for cultivating news. The resulting concordance tables for each corpus confirms my suspicions: "press" is more frequently a verb in the `product_reviews_1` corpus and more frequently a noun in the `reuters` corpus.
 
 ## Tagging Accuracy
 

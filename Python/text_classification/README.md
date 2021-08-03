@@ -88,7 +88,7 @@ The F-scores for the positive and negative classes in this classifier are around
 
  * The scripts to train, test, and calculate the accuracy of the classifier are in [/scripts](./scripts/).
  * The training, test, and development data (sets) are in [/data](./data/), with [`devkey.txt`](./data/devkey.txt) as the test key.
- * All the output is stored in [/output](./output/). This includes [`sentiment.nb`](./output/sentiment.nb), created from [`nbtrain.py`](./scripts/nbtrain.py), which contains the model used to classify the test set. It also includes the output of [`nbtest.py`](./scripts/nbtest.py), which holds the classifier's predictions of the test set.
+ * All the output is stored in [/output](./output/). This includes [`sentiment.nb`](./output/sentiment.nb), created from [`nbtrain.py`](./scripts/nbtrain.py), which contains the model used to classify the test set. It also includes the output of [`nbtest.py`](./scripts/nbtest.py), which holds the classifier's [`predictions.txt`](./output/predictions.txt) of the test set.
 
 ## Report
 
