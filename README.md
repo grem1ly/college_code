@@ -12,4 +12,4 @@ This repository contains the various code I've written throughout my college car
 
 </br></br>
 
-<b id="foot1">1</b> Most of the scripts are commented well enough that additional explanations aren't necessary. [↩](#ref1)
+<b id="foot1">1</b> Most of the scripts are commented well enough that additional explanations aren't necessary. [←](#ref1)

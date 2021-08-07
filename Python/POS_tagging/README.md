@@ -18,9 +18,9 @@ Given the `product_reviews_1` and the `reuters` corpora, I suspected that the wo
 
 Next, we look at the accuracy of NLTK's POS tagger. We use Lewis Carroll's Jabberwocky as the text to be tagged as it provides speculation on the tagging of gibberish: will the tagger correctly identify these words, or will it struggle? A sample of the output (i.e. each word followed by its tag) is provided below on the left. Below on the right, is the same sample with corrected tags (slightly subject to opinion).
 
-Automatic Tags                                                   |  Corrected Tags
-:---------------------------------------------------------------:|:----------------------------------------------------:
-![Auto](./images/auto.PNG)                                        |  ![Correct](./images/correct.PNG)
+|Automatic Tags                                                   |  Corrected Tags
+:-----------------------------------------------------------------|:----------------------------------------------------|
+|JABBERWOCKY NNP<br>â€˜Twas NNP<br>brillig NN<br>, ,<br>and CC<br>the DT<br>slithy JJ<br>toves NNS<br>Did NNP<br>gyre NN<br>and CC<br>gimble JJ<br>in IN<br>the DT<br>wabe NN<br>                                                | JABBERWOCKY NNP<br>â€˜Twas VBD<br>brillig NN<br>, ,<br>and CC<br>the DT<br>slithy JJ<br>toves NNS<br>Did VBD<br>gyre VB<br>and CC<br>gimble VB<br>in IN<br>the DT<br>wabe NN<br>                          |
 
 Since the manually corrected tags are slightly subject to opinion, the actual accuracy of the tagger might differ from interpretation to interpretation. Based on my manual tagging (the full text with the corrected tags are not available), the accuracy of the tagger, or the number of correct tags divided by the total number of tags was 167/206 or 81%.
 
