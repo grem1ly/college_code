@@ -1,13 +1,4 @@
----
-title: "Linear Regression Basics"
-output: 
-  html_document:
-    keep_md: true
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, fig.align="center")
-```
+# Linear Regression Basics
 
 This document provides an intro to linear regression of sorts (not exhaustive). It instructs you how to conduct regression analysis to determine, depending on the data set, whether a linear relationship exists between a selected predictor variable and the outcome variable. It also serves as a refresher for various methods/calculations.
 
@@ -31,17 +22,39 @@ Here we cover multiple points of analysis:
 
 Read in the data set `manager.csv` which contains information on employee rating, years of experience, salary, and origin (internal, external). These data are relevant to P1 - P13.
 
-```{r}
+
+```r
 manager_data <- read.csv("data/manager.csv", header = TRUE, as.is = TRUE, fileEncoding="UTF-8-BOM")
 colnames(manager_data) <- c("rating", "salary", "experience", "origin")
 head(manager_data)
 ```
 
+```
+##   rating salary experience   origin
+## 1    8.5     93          7 External
+## 2    4.1     59         10 Internal
+## 3    5.8     75          6 External
+## 4    4.8     69          8 External
+## 5    8.3     77         17 Internal
+## 6    7.0     76          5 Internal
+```
+
 Read in the data set `restauranttips.csv` which contains information on bill amount, tip amount, whether the bill was paid by cash (n) or credit card (y), server, percent tip, and day of the week. These data are relevant to P14.
 
-```{r}
+
+```r
 restaurant_data <- read.csv("data/restauranttips.csv", header = TRUE, as.is = TRUE, fileEncoding="UTF-8-BOM")
 head(restaurant_data)
+```
+
+```
+##    Bill   Tip Credit Guests Day Server PctTip
+## 1 23.70 10.00      n      2   f      A   42.2
+## 2 36.11  7.00      n      3   f      B   19.4
+## 3 31.99  5.01      y      2   f      A   15.7
+## 4 17.39  3.61      y      2   f      B   20.8
+## 5 15.41  3.00      n      2   f      B   19.5
+## 6 18.62  2.50      n      2   f      A   13.4
 ```
 
 ## Problems
@@ -50,28 +63,45 @@ head(restaurant_data)
 
 * Rating and Salary
 
-  ```{r}
+
+  ```r
   plot(manager_data$rating, manager_data$salary, xlab = "Employee Performance Rating", ylab = "Employee Salary (in thousands)", main = "Relationship Between Employee Salary and Performance Rating")
   ```
+
+  <img src="linear_regression_files/figure-html/unnamed-chunk-3-1.png" style="display: block; margin: auto;" />
 
   There is the assumption that an employee with a higher rating would have a higher salary than an employee with a lower rating, which could imply some sort of relationship between the two variables. From a purely data driven perspective, a linear regression seems highly plausible, affirming this assumption, because the scatterplot indicates a relatively strong positive linear trend between employee rating and salary.
 
 * Experience and Salary
 
-  ```{r}
+
+  ```r
   plot(manager_data$experience, manager_data$salary, xlab = "Employee Experience (Years)", ylab = "Employee Salary (in thousands)", main = "Relationship Between Employee Salary and Years of Experience")
   ```
+
+  <img src="linear_regression_files/figure-html/unnamed-chunk-4-1.png" style="display: block; margin: auto;" />
 
   Although there is a negative linear(ish) trend between employee experience and salary, linear regression seems less plausible in this situation than in the previous situation.
 
 <b>P2:</b>&nbsp; Fit a linear regression model with salary (outcome) and years of experience (predictor). Interpret the slope coefficient.
 
-  ```{r}
+
+  ```r
   plot(manager_data$experience, manager_data$salary, xlab = "Employee Experience (Years)", ylab = "Employee Salary (in thousands)", main = "Relationship Between Employee Salary and Years of Experience")
 
   model_experience <- lm(salary ~ experience, manager_data)
   abline(model_experience)
+  ```
+
+  <img src="linear_regression_files/figure-html/unnamed-chunk-5-1.png" style="display: block; margin: auto;" />
+
+  ```r
   model_experience$coefficients
+  ```
+
+  ```
+  ## (Intercept)  experience
+  ##  78.7796302  -0.8779235
   ```
 
 <div align="center">
@@ -88,7 +118,8 @@ Regression model: &nbsp;&nbsp;&nbsp; ![Regression_experience](https://latex.code
 
 * How-to with R
 
-  ```{r}
+
+  ```r
   salary_5yrs <- predict(model_experience, data.frame(experience = 5))
   salary_15yrs <- predict(model_experience, data.frame(experience = 15))
   ```
@@ -98,7 +129,8 @@ Regression model: &nbsp;&nbsp;&nbsp; ![Regression_experience](https://latex.code
 
   ![Regression_experience_5](https://latex.codecogs.com/svg.latex?%7B)
 
-  ```{r}
+
+  ```r
   salary_diff <- salary_5yrs - salary_15yrs
   ```
 
@@ -117,7 +149,8 @@ Regression model: &nbsp;&nbsp;&nbsp; ![Regression_experience](https://latex.code
 
 Given that the difference in years of experience (10 years) is the same as that in the previous problem, we can expect the difference in salary to be identical. Proof:
 
-```{r}
+
+```r
 salary_7yrs <- predict(model_experience, data.frame(experience = 7))
 salary_17yrs <- predict(model_experience, data.frame(experience = 17))
 ```
@@ -128,7 +161,8 @@ salary_17yrs <- predict(model_experience, data.frame(experience = 17))
 
 </br>
 
-```{r}
+
+```r
 salary_diff <- salary_7yrs - salary_17yrs
 ```
 
@@ -139,12 +173,23 @@ However, we have to remember that these estimates represent specific salaries (o
 
 <b>P5:</b>&nbsp; Analyze the relationship between performance rating and salary. Obtain the least squares line and interpret the slope.
 
-```{r}
+
+```r
 plot(manager_data$rating, manager_data$salary, xlab = "Employee Performance Rating", ylab = "Employee Salary (in thousands)", main = "Relationship Between Employee Salary and Performance Rating")
 
 model_rating <- lm(salary ~ rating, manager_data)
 abline(model_rating)
+```
+
+<img src="linear_regression_files/figure-html/unnamed-chunk-10-1.png" style="display: block; margin: auto;" />
+
+```r
 model_rating$coefficients
+```
+
+```
+## (Intercept)      rating
+##   42.575039    4.924578
 ```
 
 <div align="center">
@@ -159,7 +204,8 @@ Regression model: &nbsp;&nbsp;&nbsp; ![Regression_rating](https://latex.codecogs
 
 * With R
 
-  ```{r}
+
+  ```r
   salary_3rat <- predict(model_rating, data.frame(rating = 3))
   salary_6rat <- predict(model_rating, data.frame(rating = 6))
   ```
@@ -169,7 +215,8 @@ Regression model: &nbsp;&nbsp;&nbsp; ![Regression_rating](https://latex.codecogs
 
   ![Regression_experience_5](https://latex.codecogs.com/svg.latex?%7B)
 
-  ```{r}
+
+  ```r
   salary_diff <- salary_6rat - salary_3rat
   ```
 
@@ -190,8 +237,20 @@ An employee with a performance rating of 3 would be estimated to have a salary o
 
 * Residual sum of squares of initial regression
 
-  ```{r}
+
+  ```r
   anova(model_rating)
+  ```
+
+  ```
+  ## Analysis of Variance Table
+  ##
+  ## Response: salary
+  ##            Df Sum Sq Mean Sq F value    Pr(>F)    
+  ## rating      1 7978.5  7978.5  129.87 < 2.2e-16 ***
+  ## Residuals 148 9092.3    61.4                      
+  ## ---
+  ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
   ```
 
       Residual sum of squares: 9092.3
@@ -199,7 +258,8 @@ An employee with a performance rating of 3 would be estimated to have a salary o
 
 * Residual sum of squares of altered regression
 
-  ```{r}
+
+  ```r
   new_residuals <- manager_data$salary - (40 + manager_data$rating * 5.5)
   SSE <- sum(new_residuals^2)
   ```
@@ -210,7 +270,8 @@ The residual sum of squares for the original regression model (9092.3) is smalle
 
 <b>P8:</b>&nbsp; Using the regression in the previous problem, what would your response be to someone who asked you to predict the salary of an employee with a rating of 10?
 
-```{r}
+
+```r
 salary_10rat <- predict(model_rating, data.frame(rating = 10))
 ```
 
@@ -229,8 +290,30 @@ Regression model: &nbsp;&nbsp;&nbsp; ![Regression_experience](https://latex.code
 
 * With R
 
-  ```{r}
+
+  ```r
   summary(model_experience)
+  ```
+
+  ```
+  ##
+  ## Call:
+  ## lm(formula = salary ~ experience, data = manager_data)
+  ##
+  ## Residuals:
+  ##     Min      1Q  Median      3Q     Max
+  ## -22.512  -6.628  -0.390   6.702  27.366
+  ##
+  ## Coefficients:
+  ##             Estimate Std. Error t value Pr(>|t|)    
+  ## (Intercept)  78.7796     1.9118  41.207  < 2e-16 ***
+  ## experience   -0.8779     0.2116  -4.149  5.6e-05 ***
+  ## ---
+  ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+  ##
+  ## Residual standard error: 10.16 on 148 degrees of freedom
+  ## Multiple R-squared:  0.1042,	Adjusted R-squared:  0.09816
+  ## F-statistic: 17.22 on 1 and 148 DF,  p-value: 5.602e-05
   ```
 
       test-statisitic: -4.149
@@ -255,13 +338,36 @@ Regression model: &nbsp;&nbsp;&nbsp; ![Regression_rating](https://latex.codecogs
 
 * With R
 
-  ```{r}
+
+  ```r
   summary(model_rating)
+  ```
+
+  ```
+  ##
+  ## Call:
+  ## lm(formula = salary ~ rating, data = manager_data)
+  ##
+  ## Residuals:
+  ##      Min       1Q   Median       3Q      Max
+  ## -18.4792  -4.5974  -0.1979   4.8511  18.5660
+  ##
+  ## Coefficients:
+  ##             Estimate Std. Error t value Pr(>|t|)    
+  ## (Intercept)  42.5750     2.6289    16.2   <2e-16 ***
+  ## rating        4.9246     0.4321    11.4   <2e-16 ***
+  ## ---
+  ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+  ##
+  ## Residual standard error: 7.838 on 148 degrees of freedom
+  ## Multiple R-squared:  0.4674,	Adjusted R-squared:  0.4638
+  ## F-statistic: 129.9 on 1 and 148 DF,  p-value: < 2.2e-16
   ```
 
   The summary function for the regression model returns the test-statistic and p-value for each of the coefficients based on their differentiation from 0. These values result from a two-sided t-test. However, our alternative hypothesis is directional, so we need a one sided t-test. For this, the t-value would remain the same, but the p value would essentially be cut in half. Because the p-value for the two-sided test is so small, R caps it. So, we have to implement the pt() function:
 
-  ```{r eval=FALSE}
+
+  ```r
   pt(11.4, df = 149, lower.tail = FALSE)
   ```
 
@@ -279,8 +385,15 @@ Given the slope’s test-statistic of 11.4 and a corresponding p-value of 2.43e-
 
 <b>P11:</b>&nbsp; For the regression of salary on employee rating, find the average salary for employees who have a rating of 3.5 and compare that to the average salary for those who have a rating of 8.5. For both ratings, find the 95% confidence interval. Do the intervals overlap?
 
-```{r}
+
+```r
 predict(model_rating, data.frame(rating = c(3.5, 8.5)), int = "c", level = 0.95)
+```
+
+```
+##        fit      lwr      upr
+## 1 59.81106 57.40232 62.21980
+## 2 84.43395 81.87928 86.98863
 ```
 
     Average salary for employees that have a performance rating of 3.5: $59,811
@@ -308,13 +421,25 @@ is the same as the slope 4.925 multiplied by 5, the difference between the two r
 
   Relevant statistics from R:
 
-  ```{r}
+
+  ```r
   xbar <- mean(manager_data$rating)
   critical_t <- qt(0.975, 148)
   Sxx <- sum((manager_data$rating - xbar)^2)
   n <- nrow(manager_data)
 
   anova(model_rating)
+  ```
+
+  ```
+  ## Analysis of Variance Table
+  ##
+  ## Response: salary
+  ##            Df Sum Sq Mean Sq F value    Pr(>F)    
+  ## rating      1 7978.5  7978.5  129.87 < 2.2e-16 ***
+  ## Residuals 148 9092.3    61.4                      
+  ## ---
+  ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
   ```
 
   * ![X_bar](https://latex.codecogs.com/svg.latex?%5Cbar%7Bx%7D)&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; `5.900667`
@@ -351,13 +476,21 @@ is the same as the slope 4.925 multiplied by 5, the difference between the two r
 
 <b>Direct prediction interval code (values differ slightly from equations):</b>
 
-```{r}
+
+```r
 predict(model_rating, data.frame(rating = c(2.5, 8.4)), int="p", level = 0.95)
+```
+
+```
+##        fit      lwr      upr
+## 1 54.88648 39.07703 70.69594
+## 2 83.94150 68.25516 99.62783
 ```
 
 <b>P13:</b>&nbsp; The average employee performance rating is approximately 5.9. Without using the regression to calculate the mean salary of those whose rating is average, find out what the average salary is based on the usual sample statistics of mean and standard deviations of the data. Justify your answer using facts about the regression line and points on that line.
 
-```{r}
+
+```r
 salary_avgrat <- mean(manager_data$salary)
 ```
 
@@ -370,12 +503,15 @@ To find the average salary of those whose rating is average, we can simply find 
 
 * Plot
 
-  ```{r}
+
+  ```r
   plot(restaurant_data$Bill, restaurant_data$Tip, xlab = "Bill Amount", ylab = "Tip Given", main = "Relationship Between Bill Amount and Tip")
 
   model_tip <- lm(Tip ~ Bill, restaurant_data)
   abline(model_tip)
   ```
+
+  <img src="linear_regression_files/figure-html/unnamed-chunk-23-1.png" style="display: block; margin: auto;" />
 
 * Regression information: t-test and p-value
 
@@ -385,8 +521,30 @@ To find the average salary of those whose rating is average, we can simply find 
 
   </div>
 
-    ```{r}
+
+    ```r
     summary(model_tip)
+    ```
+
+    ```
+    ##
+    ## Call:
+    ## lm(formula = Tip ~ Bill, data = restaurant_data)
+    ##
+    ## Residuals:
+    ##     Min      1Q  Median      3Q     Max
+    ## -2.3911 -0.4891 -0.1108  0.2839  5.9738
+    ##
+    ## Coefficients:
+    ##              Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept) -0.292267   0.166160  -1.759   0.0806 .  
+    ## Bill         0.182215   0.006451  28.247   <2e-16 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ##
+    ## Residual standard error: 0.9795 on 155 degrees of freedom
+    ## Multiple R-squared:  0.8373,	Adjusted R-squared:  0.8363
+    ## F-statistic: 797.9 on 1 and 155 DF,  p-value: < 2.2e-16
     ```
 
   <div align="center">
@@ -404,8 +562,15 @@ To find the average salary of those whose rating is average, we can simply find 
 
 * Slope confidence interval
 
-  ```{r}
+
+  ```r
   confint(model_tip, level = 0.95)
+  ```
+
+  ```
+  ##                  2.5 %     97.5 %
+  ## (Intercept) -0.6204983 0.03596335
+  ## Bill         0.1694718 0.19495768
   ```
 
       CI: (0.169, 0.195)
@@ -413,8 +578,14 @@ To find the average salary of those whose rating is average, we can simply find 
 
 * Estimated average tip and confidence interval for a $40 bill
 
-  ```{r}
+
+  ```r
   predict(model_tip, data.frame(Bill = 40), int = "c", level = 0.95)
+  ```
+
+  ```
+  ##        fit      lwr      upr
+  ## 1 6.996322 6.727466 7.265178
   ```
 
       predicted tip = 6.996322 or $7.00.
