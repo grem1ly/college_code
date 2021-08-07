@@ -68,7 +68,7 @@ head(restaurant_data)
   plot(manager_data$rating, manager_data$salary, xlab = "Employee Performance Rating", ylab = "Employee Salary (in thousands)", main = "Relationship Between Employee Salary and Performance Rating")
   ```
 
-  <img src="linear_regression_files/figure-html/unnamed-chunk-3-1.png" style="display: block; margin: auto;" />
+  <img src="linear_regression_files/figure-html/unnamed-chunk-3-1.png" style="display: block; margin: auto;" align="center" />
 
   There is the assumption that an employee with a higher rating would have a higher salary than an employee with a lower rating, which could imply some sort of relationship between the two variables. From a purely data driven perspective, a linear regression seems highly plausible, affirming this assumption, because the scatterplot indicates a relatively strong positive linear trend between employee rating and salary.
 
@@ -79,7 +79,7 @@ head(restaurant_data)
   plot(manager_data$experience, manager_data$salary, xlab = "Employee Experience (Years)", ylab = "Employee Salary (in thousands)", main = "Relationship Between Employee Salary and Years of Experience")
   ```
 
-  <img src="linear_regression_files/figure-html/unnamed-chunk-4-1.png" style="display: block; margin: auto;" />
+  <img src="linear_regression_files/figure-html/unnamed-chunk-4-1.png" style="display: block; margin: auto;" align="center" />
 
   Although there is a negative linear(ish) trend between employee experience and salary, linear regression seems less plausible in this situation than in the previous situation.
 
@@ -93,7 +93,7 @@ head(restaurant_data)
   abline(model_experience)
   ```
 
-  <img src="linear_regression_files/figure-html/unnamed-chunk-5-1.png" style="display: block; margin: auto;" />
+  <img src="linear_regression_files/figure-html/unnamed-chunk-5-1.png" style="display: block; margin: auto;" align="center" />
 
   ```r
   model_experience$coefficients
@@ -181,7 +181,7 @@ model_rating <- lm(salary ~ rating, manager_data)
 abline(model_rating)
 ```
 
-<img src="linear_regression_files/figure-html/unnamed-chunk-10-1.png" style="display: block; margin: auto;" />
+<img src="linear_regression_files/figure-html/unnamed-chunk-10-1.png" style="display: block; margin: auto;" align="center" />
 
 ```r
 model_rating$coefficients
@@ -511,7 +511,7 @@ To find the average salary of those whose rating is average, we can simply find 
   abline(model_tip)
   ```
 
-  <img src="linear_regression_files/figure-html/unnamed-chunk-23-1.png" style="display: block; margin: auto;" />
+  <img src="linear_regression_files/figure-html/unnamed-chunk-23-1.png" style="display: block; margin: auto;" align="center" />
 
 * Regression information: t-test and p-value
 

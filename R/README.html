@@ -21,22 +21,366 @@
   }
 </style>
 </head>
-<body><div id="readme" class="container"><article class="markdown-body entry-content"><h1 id="college-code">College Code</h1>
-<p>This repository contains the various code I&apos;ve written throughout my college career. Each subdirectory consists of projects related to a specific programming language. Each project within each subdirectory has a corresponding README.md that explains the overall objective, relevant analyses, and explanations for how to run the specific scripts<sup id="ref1"><a href="#foot1">1</a></sup> (if necessary).</p>
-<p><strong>Note:</strong> Only Python related projects have been uploaded at this time. More are to come.</p>
-<h2 id="python-subdirectory">Python Subdirectory</h2>
+<body><div id="readme" class="container"><article class="markdown-body entry-content"><h1 id="linear-regression-basics">Linear Regression Basics</h1>
+<p>This document provides an intro to linear regression of sorts (not exhaustive). It instructs you how to conduct regression analysis to determine, depending on the data set, whether a linear relationship exists between a selected predictor variable and the outcome variable. It also serves as a refresher for various methods/calculations.</p>
+<p>The regression analyses (and the calculation of relevant statistics) throughout this document are predominantly carried out through R functions; however, the implemenation of some equations (long hand) are involved (bare formulas aren&apos;t provided).</p>
+<p>Here we cover multiple points of analysis:</p>
 <ul>
-<li><a href="/Python/NLTK_intro/">Intro to NLTK</a></li>
-<li><a href="/Python/POS_tagging/">Part of Speech Tagging</a></li>
-<li><a href="/Python/text_classification/">Text Classification</a></li>
+<li>Plotting</li>
+<li>Identifying a model<ul>
+<li>Getting the coefficients</li>
+<li>Interpreting the model</li>
 </ul>
-<h2 id="r-subdirectory">R Subdirectory</h2>
+</li>
+<li>Running t-tests and getting p-values</li>
+<li>Making model predictions</li>
+<li>Obtaining/calculating relevant statistics<ul>
+<li>residual sum of squares</li>
+<li>95% prediction intervals</li>
+<li>95% confidence intervals</li>
+</ul>
+</li>
+</ul>
+<h2 id="getting-started">Getting Started</h2>
+<p>Read in the data set <code>manager.csv</code> which contains information on employee rating, years of experience, salary, and origin (internal, external). These data are relevant to P1 - P13.</p>
+<pre><code class="language-r">manager_data &lt;- read.csv(&quot;data/manager.csv&quot;, header = TRUE, as.is = TRUE, fileEncoding=&quot;UTF-8-BOM&quot;)
+colnames(manager_data) &lt;- c(&quot;rating&quot;, &quot;salary&quot;, &quot;experience&quot;, &quot;origin&quot;)
+head(manager_data)</code></pre>
+<pre><code>##   rating salary experience   origin
+## 1    8.5     93          7 External
+## 2    4.1     59         10 Internal
+## 3    5.8     75          6 External
+## 4    4.8     69          8 External
+## 5    8.3     77         17 Internal
+## 6    7.0     76          5 Internal</code></pre><p>Read in the data set <code>restauranttips.csv</code> which contains information on bill amount, tip amount, whether the bill was paid by cash (n) or credit card (y), server, percent tip, and day of the week. These data are relevant to P14.</p>
+<pre><code class="language-r">restaurant_data &lt;- read.csv(&quot;data/restauranttips.csv&quot;, header = TRUE, as.is = TRUE, fileEncoding=&quot;UTF-8-BOM&quot;)
+head(restaurant_data)</code></pre>
+<pre><code>##    Bill   Tip Credit Guests Day Server PctTip
+## 1 23.70 10.00      n      2   f      A   42.2
+## 2 36.11  7.00      n      3   f      B   19.4
+## 3 31.99  5.01      y      2   f      A   15.7
+## 4 17.39  3.61      y      2   f      B   20.8
+## 5 15.41  3.00      n      2   f      B   19.5
+## 6 18.62  2.50      n      2   f      A   13.4</code></pre><h2 id="problems">Problems</h2>
+<p><b>P1:</b>&#xA0; Using the <code>manager.csv</code> data set, determine whether rating or experience are predictive of salary. Discuss whether linear regression is plausible.</p>
 <ul>
-<li><a href="/R/">Linear Regression Basics</a></li>
+<li>Rating and Salary</li>
 </ul>
-<p><br><br></p>
-<p><b id="foot1">1</b> Most of the scripts are commented well enough that additional explanations aren&apos;t necessary. <a href="#ref1">&#x2190;</a></p>
-</article></div><div style="background-color: #b4b2b2;width: 50px;height:50px;line-height: 50px;text-align: center;position: fixed;bottom: 10px;right: 10px;padding-top:5px;" onclick="document.documentElement.scrollTop = document.body.scrollTop =0;">
+<pre><code class="language-r">  plot(manager_data$rating, manager_data$salary, xlab = &quot;Employee Performance Rating&quot;, ylab = &quot;Employee Salary (in thousands)&quot;, main = &quot;Relationship Between Employee Salary and Performance Rating&quot;)</code></pre>
+  <img src="linear_regression_files/figure-html/unnamed-chunk-3-1.png" style="display: block; margin: auto;" align="center">
+
+<p>  There is the assumption that an employee with a higher rating would have a higher salary than an employee with a lower rating, which could imply some sort of relationship between the two variables. From a purely data driven perspective, a linear regression seems highly plausible, affirming this assumption, because the scatterplot indicates a relatively strong positive linear trend between employee rating and salary.</p>
+<ul>
+<li>Experience and Salary</li>
+</ul>
+<pre><code class="language-r">  plot(manager_data$experience, manager_data$salary, xlab = &quot;Employee Experience (Years)&quot;, ylab = &quot;Employee Salary (in thousands)&quot;, main = &quot;Relationship Between Employee Salary and Years of Experience&quot;)</code></pre>
+  <img src="linear_regression_files/figure-html/unnamed-chunk-4-1.png" style="display: block; margin: auto;" align="center">
+
+<p>  Although there is a negative linear(ish) trend between employee experience and salary, linear regression seems less plausible in this situation than in the previous situation.</p>
+<p><b>P2:</b>&#xA0; Fit a linear regression model with salary (outcome) and years of experience (predictor). Interpret the slope coefficient.</p>
+<pre><code class="language-r">  plot(manager_data$experience, manager_data$salary, xlab = &quot;Employee Experience (Years)&quot;, ylab = &quot;Employee Salary (in thousands)&quot;, main = &quot;Relationship Between Employee Salary and Years of Experience&quot;)
+
+  model_experience &lt;- lm(salary ~ experience, manager_data)
+  abline(model_experience)</code></pre>
+  <img src="linear_regression_files/figure-html/unnamed-chunk-5-1.png" style="display: block; margin: auto;" align="center">
+
+<pre><code class="language-r">  model_experience$coefficients</code></pre>
+<pre><code>  ## (Intercept)  experience
+  ##  78.7796302  -0.8779235</code></pre><div align="center">
+
+<p>Regression model: &#xA0;&#xA0;&#xA0; <img src="https://latex.codecogs.com/svg.latex?%5Chat%7By%7D_%7Bi%7D%20%3D%2078.780%20-%200.878%28x_%7Bi%7D%29" alt="Regression_experience"></p>
+</div>
+
+<p> <b>Slope interpretation:</b>    For every additional year of experience, it&#x2019;s expected that an employee&#x2019;s salary will decrease by 0.878 dollars (in thousands) or $878 roughly.</p>
+<p> Given that this is contradictory to what is expected, it suggests that the relationship between these two variables is suspect. Further investigation is needed.</p>
+<p><b>P3:</b>&#xA0; Estimate the average salary of employees with 5 years of experience. Estimate the difference between the average salary of employees with 15 years of experience and employees with 5 years of experience.</p>
+<ul>
+<li>How-to with R</li>
+</ul>
+<pre><code class="language-r">  salary_5yrs &lt;- predict(model_experience, data.frame(experience = 5))
+  salary_15yrs &lt;- predict(model_experience, data.frame(experience = 15))</code></pre>
+<pre><code>  salary_5yrs: 74.39001 or $74,390
+  salary_15yrs: 65.61078 or $65,610</code></pre><p>  <img src="https://latex.codecogs.com/svg.latex?%7B" alt="Regression_experience_5"></p>
+<pre><code class="language-r">  salary_diff &lt;- salary_5yrs - salary_15yrs</code></pre>
+<pre><code>  salary_diff: 8.779235 or $8,779</code></pre><ul>
+<li><p>How-to with equation</p>
+<p><img src="https://latex.codecogs.com/svg.latex?%5Chat%7By%7D_%7B5%7D%20%3D%2078.780%20-%200.878%285%29%20%3D%20%5C%2474.39%20%5C%3B%28in%5C%3B%20thousands%29%20%24%5C%3B%5C%3B%5C%3B%24%20or%20%24%5C%3B%5C%3B%5C%3B%24%20%5C%2474%2C390" alt="Regression_experience_5"></p>
+<p><img src="https://latex.codecogs.com/svg.latex?%5Chat%7By%7D_%7B15%7D%20%3D%2078.780%20-%200.878%2815%29%20%3D%20%5C%2465.61%20%5C%3B%28in%5C%3B%20thousands%29%20%24%5C%3B%5C%3B%5C%3B%24%20or%20%24%5C%3B%5C%3B%5C%3B%24%20%5C%2465%2C610" alt="Regression_experience_15"></p>
+<p>Difference: &#xA0;&#xA0;&#xA0; $74,390 - $65,610 = $8,780</p>
+</li>
+</ul>
+<p><b>P4:</b>&#xA0; Estimate the difference in salary between 2 randomly chosen employees, one who has 7 years of experience and one who has 17 years of experience. Comment on the results.</p>
+<p>Given that the difference in years of experience (10 years) is the same as that in the previous problem, we can expect the difference in salary to be identical. Proof:</p>
+<pre><code class="language-r">salary_7yrs &lt;- predict(model_experience, data.frame(experience = 7))
+salary_17yrs &lt;- predict(model_experience, data.frame(experience = 17))</code></pre>
+<pre><code>salary_7yrs: 72.63417 or $72,634
+salary_17yrs: 63.85493 or $63,855</code></pre><br>
+
+
+<pre><code class="language-r">salary_diff &lt;- salary_7yrs - salary_17yrs</code></pre>
+<pre><code>salary_diff: 8.779235 or $8,779</code></pre><p>However, we have to remember that these estimates represent specific salaries (of two random employees) rather than the average salaries of all those who have 7 or 17 years of experience, respectively. This distinction has direct effects on the amount of variance present. So, although the difference-in-salaries estimates are identical, the variances differ. Specifically, the variance of the estimate in this scenario is greater than that of the previous scenario.</p>
+<p><b>P5:</b>&#xA0; Analyze the relationship between performance rating and salary. Obtain the least squares line and interpret the slope.</p>
+<pre><code class="language-r">plot(manager_data$rating, manager_data$salary, xlab = &quot;Employee Performance Rating&quot;, ylab = &quot;Employee Salary (in thousands)&quot;, main = &quot;Relationship Between Employee Salary and Performance Rating&quot;)
+
+model_rating &lt;- lm(salary ~ rating, manager_data)
+abline(model_rating)</code></pre>
+<img src="linear_regression_files/figure-html/unnamed-chunk-10-1.png" style="display: block; margin: auto;" align="center">
+
+<pre><code class="language-r">model_rating$coefficients</code></pre>
+<pre><code>## (Intercept)      rating
+##   42.575039    4.924578</code></pre><div align="center">
+
+<p>Regression model: &#xA0;&#xA0;&#xA0; <img src="https://latex.codecogs.com/svg.latex?%5Chat%7By%7D_%7Bi%7D%20%3D%2042.575%20+%204.925%28x_%7Bi%7D%29" alt="Regression_rating"></p>
+</div>
+
+<p><b>Slope interpretation:</b>    For every additional point increase in performance rating, an employee&apos;s salary is expected to increase by 4.925 dollars (in thousands) or $4,925 roughly.</p>
+<p><b>P6:</b>&#xA0; Compare the average salary of an employee with a rating of 3 to that of an employee with a rating of 6. What do you conclude?</p>
+<ul>
+<li>With R</li>
+</ul>
+<pre><code class="language-r">  salary_3rat &lt;- predict(model_rating, data.frame(rating = 3))
+  salary_6rat &lt;- predict(model_rating, data.frame(rating = 6))</code></pre>
+<pre><code>  salary_3rat: 57.34877 or $57,349
+  salary_6rat: 72.12251 or $72,123</code></pre><p>  <img src="https://latex.codecogs.com/svg.latex?%7B" alt="Regression_experience_5"></p>
+<pre><code class="language-r">  salary_diff &lt;- salary_6rat - salary_3rat</code></pre>
+<pre><code>  salary_diff: 14.77373 or $14,774</code></pre><ul>
+<li><p>With equation</p>
+<p><img src="https://latex.codecogs.com/svg.latex?%5Chat%7By%7D_%7B3%7D%20%3D%2042.575%20+%204.925%283%29%20%3D%20%5C%2457.350%20%5C%3B%28in%5C%3B%20thousands%29%20%24%5C%3B%5C%3B%5C%3B%24%20or%20%24%5C%3B%5C%3B%5C%3B%24%20%5C%2457%2C350" alt="Regression_rating_3"></p>
+<p><img src="https://latex.codecogs.com/svg.latex?%5Chat%7By%7D_%7B6%7D%20%3D%2042.575%20+%204.925%286%29%20%3D%20%5C%2472.125%20%5C%3B%28in%5C%3B%20thousands%29%20%24%5C%3B%5C%3B%5C%3B%24%20or%20%24%5C%3B%5C%3B%5C%3B%24%20%5C%2472%2C125" alt="Regression_rating_6"></p>
+<p>Difference: &#xA0;&#xA0; $72,125 - $57,350 = $14,775</p>
+</li>
+</ul>
+<p>An employee with a performance rating of 3 would be estimated to have a salary of $57,350 and an employee with a performance rating of 6 would be estimated to have a salary of $72,125, so the estimated salary difference between those two employees would be $14,775. Based on this difference, we can conclude that a person with a higher rating would have a higher salary.</p>
+<p><b>P7:</b>&#xA0; Using the regression in the previous problem, calculate the residual sum of squares. Recalculate the residuals for this data when the intercept is set to 40 and the slope is set to 5.5. Compare the result to the residual sum of squares for the least squares estimates.</p>
+<ul>
+<li>Residual sum of squares of initial regression</li>
+</ul>
+<pre><code class="language-r">  anova(model_rating)</code></pre>
+<pre><code>  ## Analysis of Variance Table
+  ##
+  ## Response: salary
+  ##            Df Sum Sq Mean Sq F value    Pr(&gt;F)    
+  ## rating      1 7978.5  7978.5  129.87 &lt; 2.2e-16 ***
+  ## Residuals 148 9092.3    61.4                      
+  ## ---
+  ## Signif. codes:  0 &apos;***&apos; 0.001 &apos;**&apos; 0.01 &apos;*&apos; 0.05 &apos;.&apos; 0.1 &apos; &apos; 1</code></pre><pre><code>  Residual sum of squares: 9092.3</code></pre><ul>
+<li>Residual sum of squares of altered regression</li>
+</ul>
+<pre><code class="language-r">  new_residuals &lt;- manager_data$salary - (40 + manager_data$rating * 5.5)
+  SSE &lt;- sum(new_residuals^2)</code></pre>
+<pre><code>  Residual sum of squares: 9302.218</code></pre><p>The residual sum of squares for the original regression model (9092.3) is smaller than the residual sum of squares for the same data with altered coefficients (9302.218). This is intuitive because the original regression with the least square estimates makes it so that all the data points are as close as they can be to the regression line. In other words, the residuals for each of the data points are minimized. With the altered slope and intercept this is not the case, making the residual sum of squares larger.</p>
+<p><b>P8:</b>&#xA0; Using the regression in the previous problem, what would your response be to someone who asked you to predict the salary of an employee with a rating of 10?</p>
+<pre><code class="language-r">salary_10rat &lt;- predict(model_rating, data.frame(rating = 10))</code></pre>
+<pre><code>salary_10rat: 91.82082 or $91,821</code></pre><p>However, given that this particular rating is of a value outside the scope of the data, we have to be careful. Extrapolating can be unreliable.</p>
+<p><b>P9:</b>&#xA0; Obtain the t-test for the hypothesis <img src="https://latex.codecogs.com/svg.latex?H_%7B0%7D%3A%20%5Cbeta_%7B1%7D%20%3D%200%24%20vs.%20%24H_%7Ba%7D%3A%20%5Cbeta_%7B1%7D%20%5Cneq%200" alt="Hypothesis_1"> from the regression of salary on years of experience. Provide the test-statistic, the p-value, and a conclusion in context. Does the result help to explain the negative slope?</p>
+<div align="center">
+
+<p>Regression model: &#xA0;&#xA0;&#xA0; <img src="https://latex.codecogs.com/svg.latex?%5Chat%7By%7D_%7Bi%7D%20%3D%2078.780%20-%200.878%28x_%7Bi%7D%29" alt="Regression_experience"></p>
+</div>
+
+<ul>
+<li>With R</li>
+</ul>
+<pre><code class="language-r">  summary(model_experience)</code></pre>
+<pre><code>  ##
+  ## Call:
+  ## lm(formula = salary ~ experience, data = manager_data)
+  ##
+  ## Residuals:
+  ##     Min      1Q  Median      3Q     Max
+  ## -22.512  -6.628  -0.390   6.702  27.366
+  ##
+  ## Coefficients:
+  ##             Estimate Std. Error t value Pr(&gt;|t|)    
+  ## (Intercept)  78.7796     1.9118  41.207  &lt; 2e-16 ***
+  ## experience   -0.8779     0.2116  -4.149  5.6e-05 ***
+  ## ---
+  ## Signif. codes:  0 &apos;***&apos; 0.001 &apos;**&apos; 0.01 &apos;*&apos; 0.05 &apos;.&apos; 0.1 &apos; &apos; 1
+  ##
+  ## Residual standard error: 10.16 on 148 degrees of freedom
+  ## Multiple R-squared:  0.1042,    Adjusted R-squared:  0.09816
+  ## F-statistic: 17.22 on 1 and 148 DF,  p-value: 5.602e-05</code></pre><pre><code>  test-statisitic: -4.149
+  p-value: 5.6e-0.5</code></pre><ul>
+<li><p>With equations (values also found in <code>summary()</code>)</p>
+<p>test-statistic: &#xA0;&#xA0;&#xA0; <img src="https://latex.codecogs.com/svg.latex?%5Cfrac%7B-%5C%2C0.8779%7D%7B0.2116%7D%20%3D%20-4.149" alt="Regression_experience_t-test"></p>
+<p>p-value: &#xA0;&#xA0;&#xA0; <img src="https://latex.codecogs.com/svg.latex?P%28%7Ct_%7B148%7D%7C%20%3E%204.149%29%20%3D%205.6%20%5Ctimes%2010%5E%7B-5%7D" alt="Regression_experience_p-value"></p>
+</li>
+</ul>
+<p>Given the slope&#x2019;s test-statistic of -4.149 and a corresponding p-value of 5.6e-05, which is less than <img src="https://latex.codecogs.com/svg.latex?%5Calpha%20%3D%200.05" alt="Alpha">, we can reject the null hypothesis <img src="https://latex.codecogs.com/svg.latex?H_%7B0%7D%3A%20%5Cbeta_%7B1%7D%20%3D%200" alt="Hypothesis_null">. It can be concluded that the experience an employee has is a significant predictor of their salary. That being said, I don&#x2019;t think this result effectively explains the negative slope. It would make sense for years of experience to predict salary, but I would think more so in the positive direction.</p>
+<p><b>P10:</b>&#xA0; Obtain the t-test of the hypothesis <img src="https://latex.codecogs.com/svg.latex?H_%7B0%7D%3A%20%5Cbeta_%7B1%7D%20%3D%200%24%20vs.%20%24H_%7Ba%7D%3A%20%5Cbeta_%7B1%7D%20%3E%200" alt="Hypothesis_2"> where <img src="https://latex.codecogs.com/svg.latex?%5Cbeta_%7B1%7D" alt="Slope_beta"> is the slope for the regression of salary on employee rating. Provide the test-statistic, the p-value, and a conclusion in context.</p>
+<div align="center">
+
+<p>Regression model: &#xA0;&#xA0;&#xA0; <img src="https://latex.codecogs.com/svg.latex?%5Chat%7By%7D_%7Bi%7D%20%3D%2042.575%20+%204.925%28x_%7Bi%7D%29" alt="Regression_rating"></p>
+</div>
+
+<ul>
+<li>With R</li>
+</ul>
+<pre><code class="language-r">  summary(model_rating)</code></pre>
+<pre><code>  ##
+  ## Call:
+  ## lm(formula = salary ~ rating, data = manager_data)
+  ##
+  ## Residuals:
+  ##      Min       1Q   Median       3Q      Max
+  ## -18.4792  -4.5974  -0.1979   4.8511  18.5660
+  ##
+  ## Coefficients:
+  ##             Estimate Std. Error t value Pr(&gt;|t|)    
+  ## (Intercept)  42.5750     2.6289    16.2   &lt;2e-16 ***
+  ## rating        4.9246     0.4321    11.4   &lt;2e-16 ***
+  ## ---
+  ## Signif. codes:  0 &apos;***&apos; 0.001 &apos;**&apos; 0.01 &apos;*&apos; 0.05 &apos;.&apos; 0.1 &apos; &apos; 1
+  ##
+  ## Residual standard error: 7.838 on 148 degrees of freedom
+  ## Multiple R-squared:  0.4674,    Adjusted R-squared:  0.4638
+  ## F-statistic: 129.9 on 1 and 148 DF,  p-value: &lt; 2.2e-16</code></pre><p>  The summary function for the regression model returns the test-statistic and p-value for each of the coefficients based on their differentiation from 0. These values result from a two-sided t-test. However, our alternative hypothesis is directional, so we need a one sided t-test. For this, the t-value would remain the same, but the p value would essentially be cut in half. Because the p-value for the two-sided test is so small, R caps it. So, we have to implement the pt() function:</p>
+<pre><code class="language-r">  pt(11.4, df = 149, lower.tail = FALSE)</code></pre>
+<pre><code>  test-statistic: 11.4
+  p-value: 2.430632e-22</code></pre><ul>
+<li><p>With equations (values also found in <code>summmary()</code>)</p>
+<p>test-statistic: &#xA0;&#xA0;&#xA0; <img src="https://latex.codecogs.com/svg.latex?%5Cfrac%7B4.9246%7D%7B0.4321%7D%20%3D%2011.4" alt="Regression_rating_t-test"></p>
+<p>p-value: &#xA0;&#xA0;&#xA0; <img src="https://latex.codecogs.com/svg.latex?P%28t_%7B148%7D%20%3E%2011.4%29%20%3D%200" alt="Regression_rating_p-value"></p>
+</li>
+</ul>
+<p>Given the slope&#x2019;s test-statistic of 11.4 and a corresponding p-value of 2.43e-22, which is drastically less than <img src="https://latex.codecogs.com/svg.latex?%5Calpha%20%3D%200.05" alt="Alpha">, we can reject the null hypothesis <img src="https://latex.codecogs.com/svg.latex?H_%7B0%7D%3A%20%5Cbeta_%7B1%7D%20%3D%200" alt="Hypothesis_null">. The slope coefficient for an employee&#x2019;s performance rating is greater than 0.</p>
+<p><b>P11:</b>&#xA0; For the regression of salary on employee rating, find the average salary for employees who have a rating of 3.5 and compare that to the average salary for those who have a rating of 8.5. For both ratings, find the 95% confidence interval. Do the intervals overlap?</p>
+<pre><code class="language-r">predict(model_rating, data.frame(rating = c(3.5, 8.5)), int = &quot;c&quot;, level = 0.95)</code></pre>
+<pre><code>##        fit      lwr      upr
+## 1 59.81106 57.40232 62.21980
+## 2 84.43395 81.87928 86.98863</code></pre><pre><code>Average salary for employees that have a performance rating of 3.5: $59,811
+Confidence interval: (57.402, 62.220) -&gt; between $57,402 and $62,220
+
+Average salary for employees that have a performance rating of 8.5: $84,434
+Confidence interval: (81.879, 86.989) -&gt; between $81,879 and $86,989</code></pre><p>The intervals do not overlap.</p>
+<p>The difference between average salaries:</p>
+<p>$84,434 - $59,811 = $24,623</p>
+<p>is the same as the slope 4.925 multiplied by 5, the difference between the two ratings (8.5 - 3.5).</p>
+<p><b>P12:</b>&#xA0; For the regression of salary on employee rating, find the average salary for employees who have a rating of 2.5 and compare that to the average salary for those who have a rating of 8.4. For both ratings, find the 95% prediction interval. Show work through relevant formulas, but obtain the necessary measures through R.</p>
+<ul>
+<li><p>Performance rating of 2.5</p>
+<p>Predicted salary: &#xA0;&#xA0;&#xA0; <img src="https://latex.codecogs.com/svg.latex?%5Chat%7By%7D_%7B2.5%7D%20%3D%2042.575%20+%204.925%282.5%29%20%3D%20%5C%2454.888%20%5C%3B%28in%5C%3B%20thousands%29%20%24%5C%3B%5C%3B%5C%3B%24%20or%20%24%5C%3B%5C%3B%5C%3B%24%20%5C%2454%2C888" alt="Regression_rating_2.5"></p>
+<p>Predicted interval: &#xA0;&#xA0;&#xA0; <img src="https://latex.codecogs.com/svg.latex?%5Chat%7By%7D_%7B2.5%7D%5C%2C%5Cpm%5C%2Ct%5CBig%281-%5CBig%28%5Cfrac%7B0.05%7D%7B2%7D%5CBig%29%3Bn-2%5CBig%29%5Ctimes%5Csqrt%7BMSE%5Cbigg%281+%5Cfrac%7B1%7D%7Bn%7D+%5Cfrac%7B%28x_%7B2.5%7D-%5Cbar%7Bx%7D%29%5E%7B2%7D%7D%7B%5Csum_%7Bi%3D1%7D%5En%28x_i-%5Cbar%7Bx%7D%29%5E2%7D%7D%5Cbigg%29" alt="Regression_rating_2.5_interval_formula"></p>
+<p>Relevant statistics from R:</p>
+</li>
+</ul>
+<pre><code class="language-r">  xbar &lt;- mean(manager_data$rating)
+  critical_t &lt;- qt(0.975, 148)
+  Sxx &lt;- sum((manager_data$rating - xbar)^2)
+  n &lt;- nrow(manager_data)
+
+  anova(model_rating)</code></pre>
+<pre><code>  ## Analysis of Variance Table
+  ##
+  ## Response: salary
+  ##            Df Sum Sq Mean Sq F value    Pr(&gt;F)    
+  ## rating      1 7978.5  7978.5  129.87 &lt; 2.2e-16 ***
+  ## Residuals 148 9092.3    61.4                      
+  ## ---
+  ## Signif. codes:  0 &apos;***&apos; 0.001 &apos;**&apos; 0.01 &apos;*&apos; 0.05 &apos;.&apos; 0.1 &apos; &apos; 1</code></pre><ul>
+<li><img src="https://latex.codecogs.com/svg.latex?%5Cbar%7Bx%7D" alt="X_bar">&#xA0;:&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; <code>5.900667</code></li>
+<li><img src="https://latex.codecogs.com/svg.latex?%7Bt%7D" alt="Critical_t">&#xA0;:&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; <code>1.976122</code></li>
+<li><img src="https://latex.codecogs.com/svg.latex?%7BSxx%7D" alt="Sxx">&#xA0;:&#xA0;&#xA0;&#xA0; <code>328.9899</code></li>
+<li><img src="https://latex.codecogs.com/svg.latex?%7BMSE%7D" alt="MSE">&#xA0;: <code>61.4</code></li>
+<li><img src="https://latex.codecogs.com/svg.latex?%7Bn%7D" alt="n">&#xA0;:&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; <code>150</code></li>
+</ul>
+<div align="center">
+
+<p><img src="https://latex.codecogs.com/svg.latex?54.8875%5C%3B%5Cpm%5C%3B1.976122%5Ctimes%5Csqrt%7B61.4%5Cbigg%281+%5Cfrac%7B1%7D%7B150%7D+%5Cfrac%7B%282.5-5.900667%29%5E%7B2%7D%7D%7B328.9899%7D%7D%5Cbigg%29%5C%3B%5C%3B%5C%3B%20%3D%20%5C%3B%5C%3B%5C%3B%20%2839.083%2C%2070.692%29" alt="Regression_rating_2.5_interval"></p>
+</div>
+
+<ul>
+<li><p>Perfomance rating of 8.4</p>
+<p>Predicted salary: &#xA0;&#xA0;&#xA0; <img src="https://latex.codecogs.com/svg.latex?%5Chat%7By%7D_%7B8.4%7D%20%3D%2042.575%20+%204.925%288.4%29%20%3D%20%5C%2483.945%20%5C%3B%28in%5C%3B%20thousands%29%20%24%5C%3B%5C%3B%5C%3B%24%20or%20%24%5C%3B%5C%3B%5C%3B%24%20%5C%2483%2C945" alt="Regression_rating_8.4"></p>
+<p>Predicted interval: &#xA0;&#xA0;&#xA0; <img src="https://latex.codecogs.com/svg.latex?%5Chat%7By%7D_%7B8.4%7D%5C%2C%5Cpm%5C%2Ct%5CBig%281-%5CBig%28%5Cfrac%7B0.05%7D%7B2%7D%5CBig%29%3Bn-2%5CBig%29%5Ctimes%5Csqrt%7BMSE%5Cbigg%281+%5Cfrac%7B1%7D%7Bn%7D+%5Cfrac%7B%28x_%7B8.4%7D-%5Cbar%7Bx%7D%29%5E%7B2%7D%7D%7B%5Csum_%7Bi%3D1%7D%5En%28x_i-%5Cbar%7Bx%7D%29%5E2%7D%7D%5Cbigg%29" alt="Regression_rating_8.4_interval_formula"></p>
+<p>Relevant statistics from R:</p>
+<ul>
+<li><img src="https://latex.codecogs.com/svg.latex?%5Cbar%7Bx%7D" alt="X_bar">&#xA0;:&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; <code>5.900667</code></li>
+<li><img src="https://latex.codecogs.com/svg.latex?%7Bt%7D" alt="Critical_t">&#xA0;:&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; <code>1.976122</code></li>
+<li><img src="https://latex.codecogs.com/svg.latex?%7BSxx%7D" alt="Sxx">&#xA0;:&#xA0;&#xA0;&#xA0; <code>328.9899</code></li>
+<li><img src="https://latex.codecogs.com/svg.latex?%7BMSE%7D" alt="MSE">&#xA0;: <code>61.4</code></li>
+<li><img src="https://latex.codecogs.com/svg.latex?%7Bn%7D" alt="n">&#xA0;:&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; <code>150</code></li>
+</ul>
+</li>
+</ul>
+<div align="center">
+
+<p><img src="https://latex.codecogs.com/svg.latex?83.945%5C%3B%5Cpm%5C%3B1.976122%5Ctimes%5Csqrt%7B61.4%5Cbigg%281+%5Cfrac%7B1%7D%7B150%7D+%5Cfrac%7B%288.4-5.900667%29%5E%7B2%7D%7D%7B328.9899%7D%7D%5Cbigg%29%5C%3B%5C%3B%5C%3B%20%3D%20%5C%3B%5C%3B%5C%3B%20%2868.208%2C%2099.627%29" alt="Regression_rating_8.4_interval"></p>
+</div>
+
+<p><b>Direct prediction interval code (values differ slightly from equations):</b></p>
+<pre><code class="language-r">predict(model_rating, data.frame(rating = c(2.5, 8.4)), int=&quot;p&quot;, level = 0.95)</code></pre>
+<pre><code>##        fit      lwr      upr
+## 1 54.88648 39.07703 70.69594
+## 2 83.94150 68.25516 99.62783</code></pre><p><b>P13:</b>&#xA0; The average employee performance rating is approximately 5.9. Without using the regression to calculate the mean salary of those whose rating is average, find out what the average salary is based on the usual sample statistics of mean and standard deviations of the data. Justify your answer using facts about the regression line and points on that line.</p>
+<pre><code class="language-r">salary_avgrat &lt;- mean(manager_data$salary)</code></pre>
+<pre><code>salary_avgrat: 71.63333 or $71,6333</code></pre><p>To find the average salary of those whose rating is average, we can simply find the average salary (overall). This stems from the fact that <img src="https://latex.codecogs.com/svg.latex?%5Cbar%7BY%7D%20%3D%20b_%7B0%7D%20+%20b_%7B1%7D%5Cbar%7BX%7D" alt="normal_equation">, suggesting that <img src="https://latex.codecogs.com/svg.latex?%5Cbig%28%5Cbar%7BX%7D%2C%5Cbar%7BY%7D%5Cbig%29" alt="normal_equation"> is on the regression line.</p>
+<p><b>P14:</b>&#xA0; For the <code>restauranttips.csv</code> data set, carry out a regression analysis for tip amount <img src="https://latex.codecogs.com/svg.latex?%28Y%29" alt="Y"> on the amount of the bill <img src="https://latex.codecogs.com/svg.latex?%28X%29" alt="X">. Present a relevant graph, find the regression line, and carry out a t-test to assess whether there is a linear relationship between bill and tip amount. Find a confidence interval for the slope parameter <img src="https://latex.codecogs.com/svg.latex?%5Cbeta_%7B1%7D" alt="Slope_beta">. Predict the average tip for a $40 bill. Find the confidence interval for a $40 bill.</p>
+<ul>
+<li>Plot</li>
+</ul>
+<pre><code class="language-r">  plot(restaurant_data$Bill, restaurant_data$Tip, xlab = &quot;Bill Amount&quot;, ylab = &quot;Tip Given&quot;, main = &quot;Relationship Between Bill Amount and Tip&quot;)
+
+  model_tip &lt;- lm(Tip ~ Bill, restaurant_data)
+  abline(model_tip)</code></pre>
+  <img src="linear_regression_files/figure-html/unnamed-chunk-23-1.png" style="display: block; margin: auto;" align="center">
+
+<ul>
+<li><p>Regression information: t-test and p-value</p>
+<div align="center">
+
+<p><img src="https://latex.codecogs.com/svg.latex?H_%7B0%7D%3A%20%5Cbeta_%7B1%7D%20%3D%200%24%20vs.%20%24H_%7Ba%7D%3A%20%5Cbeta_%7B1%7D%20%5Cneq%200" alt="Hypothesis_1"></p>
+</div>
+
+
+</li>
+</ul>
+<pre><code>```r
+summary(model_tip)
+```
+
+```
+##
+## Call:
+## lm(formula = Tip ~ Bill, data = restaurant_data)
+##
+## Residuals:
+##     Min      1Q  Median      3Q     Max
+## -2.3911 -0.4891 -0.1108  0.2839  5.9738
+##
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -0.292267   0.166160  -1.759   0.0806 .  
+## Bill         0.182215   0.006451  28.247   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &apos;***&apos; 0.001 &apos;**&apos; 0.01 &apos;*&apos; 0.05 &apos;.&apos; 0.1 &apos; &apos; 1
+##
+## Residual standard error: 0.9795 on 155 degrees of freedom
+## Multiple R-squared:  0.8373,    Adjusted R-squared:  0.8363
+## F-statistic: 797.9 on 1 and 155 DF,  p-value: &lt; 2.2e-16
+```</code></pre>  <div align="center">
+
+<p>  Regression model: &#xA0;&#xA0;&#xA0; <img src="https://latex.codecogs.com/svg.latex?%5Chat%7By%7D_%7Bi%7D%20%3D%20-0.292%20+%200.182x_%7Bi%7D" alt="Regression_bill"></p>
+  </div>
+
+
+<pre><code>    test-statistic: 28.247
+    p-value: &lt;2e-16 ***
+
+
+Since the p-value for the slope (tip amount) is far less than ![Alpha](https://latex.codecogs.com/svg.latex?%5Calpha%20%3D%200.05), we can reject the null hypothesis ![Hypothesis_null](https://latex.codecogs.com/svg.latex?H_%7B0%7D%3A%20%5Cbeta_%7B1%7D%20%3D%200). Therefore, there&apos;s strong indication that a linear relationship exists between the amount of the bill and the amount of the tip.</code></pre><ul>
+<li>Slope confidence interval</li>
+</ul>
+<pre><code class="language-r">  confint(model_tip, level = 0.95)</code></pre>
+<pre><code>  ##                  2.5 %     97.5 %
+  ## (Intercept) -0.6204983 0.03596335
+  ## Bill         0.1694718 0.19495768</code></pre><pre><code>  CI: (0.169, 0.195)</code></pre><ul>
+<li>Estimated average tip and confidence interval for a $40 bill</li>
+</ul>
+<pre><code class="language-r">  predict(model_tip, data.frame(Bill = 40), int = &quot;c&quot;, level = 0.95)</code></pre>
+<pre><code>  ##        fit      lwr      upr
+  ## 1 6.996322 6.727466 7.265178</code></pre><pre><code>  predicted tip = 6.996322 or $7.00.
+  Confidence interval = (6.727, 7.265)</code></pre></article></div><div style="background-color: #b4b2b2;width: 50px;height:50px;line-height: 50px;text-align: center;position: fixed;bottom: 10px;right: 10px;padding-top:5px;" onclick="document.documentElement.scrollTop = document.body.scrollTop =0;">
   <svg t="1533629773982" class="icon" style="" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1035" xlink="http://www.w3.org/1999/xlink" width="40" height="40"><defs><style type="text/css">@font-face { font-family: uc-nexus-iconfont; src: url("chrome-extension://pogijhnlcfmcppgimcaccdkmbedjkmhi/res/font_9qmmi8b8jsxxbt9.woff") format("woff"), url("chrome-extension://pogijhnlcfmcppgimcaccdkmbedjkmhi/res/font_9qmmi8b8jsxxbt9.ttf") format("truetype"); }
   </style></defs><path d="M536.255427 195.182354c-7.804756-7.804756-17.966187-11.615549-28.311813-11.615549-9.43693 0-18.874883 3.449565-26.496467 10.163477-2.360767 1.452071-4.356214 3.267417-6.352685 5.262864L218.47792 455.611735c-15.607466 15.60542-15.607466 40.834011 0 56.43943 15.607466 15.607466 41.558511 15.607466 57.167001 0l193.46013-192.733583 0 600.526219c0 22.1423 17.787108 39.927361 39.927361 39.927361 22.140253 0 39.927361-17.785062 39.927361-39.927361L548.959773 319.317583 737.15704 508.422522c15.607466 15.607466 40.469714 15.607466 56.078203 0 15.607466-15.607466 15.425318-40.834011-0.182149-56.441477L536.255427 195.182354 536.255427 195.182354z" p-id="1036" fill="#333"/><path d="M101.784174 143.097092l816.674071 0c22.140253 0 39.925315-17.785062 39.925315-39.927361 0-22.140253-17.784038-39.925315-39.925315-39.925315L101.784174 63.244416c-22.140253 0-39.927361 17.785062-39.927361 39.925315C61.856813 125.31203 79.643921 143.097092 101.784174 143.097092L101.784174 143.097092z" p-id="1037" fill="#333"/></svg>
 </div>

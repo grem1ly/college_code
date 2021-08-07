@@ -10,6 +10,10 @@ This repository contains the various code I've written throughout my college car
 * [Part of Speech Tagging](/Python/POS_tagging/)
 * [Text Classification](/Python/text_classification/)
 
+## R Subdirectory
+
+* [Linear Regression Basics](/R/)
+
 </br></br>
 
 <b id="foot1">1</b> Most of the scripts are commented well enough that additional explanations aren't necessary. [←](#ref1)
