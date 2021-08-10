@@ -12,11 +12,11 @@ Text classification is a form of machine learning that categorizes text into spe
 
 There are several different applications of text classification, but one of the most common and the one I focus on involves sentiment analysis. Sentiment analysis specifically involves gauging/classifying the inherent sentiment (or attitude) of various texts. They often classify text as positive, negative, or neutral, and they are extremely influential for businesses such that they can easily track consumer behavior (e.g. attitudes towards specific products) and adjust decisions to sway them favorably.
 
-I have created a rather simple binary text classifier that categorizes movie reviews as either being positive or negative. Essentially, it evaluates the language within each review, and identifies the overall polarity (i.e. positive or negative) based on a set of priors determined by a training set (i.e. movie reviews that are pre-annotated as either positive or negative).
+I have created a rather simple binary text classifier that categorizes movie reviews as either being positive or negative<sup id="ref1">[1](#foot1)</sup>. Essentially, it evaluates the language within each review, and identifies the overall polarity (i.e. positive or negative) based on a set of priors determined by a training set (i.e. movie reviews that are pre-annotated as either positive or negative).
 
 ## The Classifier
 
-To classify a given review, we essentially want to evaluate the probability that it is positive and (separately) the probability that it is negative and then compare the results to identify which classification is more likely. Another way to think about this is to evaluate the probability of each class (e.g. positive, negative) given the movie review. The equation below represents the calculation needed to determine the probability of the positive class given a review<sup id="ref1">[1](#foot1)</sup>:
+To classify a given review, we essentially want to evaluate the probability that it is positive and (separately) the probability that it is negative and then compare the results to identify which classification is more likely. Another way to think about this is to evaluate the probability of each class (e.g. positive, negative) given the movie review. The equation below represents the calculation needed to determine the probability of the positive class given a review<sup id="ref2">[2](#foot2)</sup>:
 
 <div align="center">
 
@@ -132,4 +132,5 @@ Check out the research project a few of my fellow students and I worked on that 
 
  </br></br>
 
- <b id="foot1">1</b> All following equations and explanations specifically involve the positive class, and they should be adapted accordingly for the negative class. [←](#ref1)
+<b id="foot1">1</b> The movie reviews used within this classifier can be found here: https://rajeevmasand.com/admin/category/reviews/our-films/ [←](#ref1)
+<b id="foot2">1</b> All following equations and explanations specifically involve the positive class, and they should be adapted accordingly for the negative class. [←](#ref2)

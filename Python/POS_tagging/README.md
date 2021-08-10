@@ -16,7 +16,7 @@ Given the `product_reviews_1` and the `reuters` corpora, I suspected that the wo
 
 ## Tagging Accuracy
 
-Next, we look at the accuracy of NLTK's POS tagger. We use Lewis Carroll's Jabberwocky as the text to be tagged as it provides speculation on the tagging of gibberish: will the tagger correctly identify these words, or will it struggle? A sample of the output (i.e. each word followed by its tag) is provided below on the left. Below on the right, is the same sample with corrected tags (slightly subject to opinion).
+Next, we look at the accuracy of NLTK's POS tagger. We use Lewis Carroll's [Jabberwocky](https://www.poetryfoundation.org/poems/42916/jabberwocky) as the text to be tagged as it provides speculation on the tagging of gibberish: will the tagger correctly identify these words, or will it struggle? A sample of the output (i.e. each word followed by its tag) is provided below on the left. Below on the right, is the same sample with corrected tags (slightly subject to opinion).
 
 |Automatic Tags                                                   |  Corrected Tags
 :-----------------------------------------------------------------|:----------------------------------------------------|

@@ -1,8 +1,8 @@
 # Linear Regression Basics
 
-This document provides an intro to linear regression of sorts (not exhaustive). It instructs you how to conduct regression analysis to determine, depending on the data set, whether a linear relationship exists between a selected predictor variable and the outcome variable. It also serves as a refresher for various methods/calculations.
+This document provides an intro to linear regression of sorts (not exhaustive). It instructs you how to conduct regression analysis to determine, depending on the dataset, whether a linear relationship exists between a selected predictor variable and the outcome variable. It also serves as a refresher for various methods/calculations.
 
-The regression analyses (and the calculation of relevant statistics) throughout this document are predominantly carried out through R functions; however, the implemenation of some equations (long hand) are involved (bare formulas aren't provided).
+The regression analyses (and the calculation of relevant statistics) throughout this document are predominantly carried out through R functions; however, the implementation of some equations (long hand) are involved (bare formulas aren't provided).
 
 Here we cover multiple points of analysis:
 
@@ -20,7 +20,9 @@ Here we cover multiple points of analysis:
 
 ## Getting Started
 
-Read in the data set `manager.csv` which contains information on employee rating, years of experience, salary, and origin (internal, external). These data are relevant to P1 - P13.
+**Note:** The following analyses are done on datasets provided to me. I am not certain whether such data can be redistributed, so they are unavailable for the time being. The code and interpretations can, however, be applied to any dataset.  
+
+Read in the dataset `manager.csv` which contains information on employee rating, years of experience, salary, and origin (internal, external). These data are relevant to P1 - P13.
 
 
 ```r
@@ -39,7 +41,7 @@ head(manager_data)
 ## 6    7.0     76          5 Internal
 ```
 
-Read in the data set `restauranttips.csv` which contains information on bill amount, tip amount, whether the bill was paid by cash (n) or credit card (y), server, percent tip, and day of the week. These data are relevant to P14.
+Read in the dataset `restauranttips.csv` which contains information on bill amount, tip amount, whether the bill was paid by cash (n) or credit card (y), server, percent tip, and day of the week. These data are relevant to P14.
 
 
 ```r
@@ -59,7 +61,7 @@ head(restaurant_data)
 
 ## Problems
 
-<b>P1:</b>&nbsp; Using the `manager.csv` data set, determine whether rating or experience are predictive of salary. Discuss whether linear regression is plausible.
+<b>P1:</b>&nbsp; Using the `manager.csv` dataset, determine whether rating or experience are predictive of salary. Discuss whether linear regression is plausible.
 
 * Rating and Salary
 
@@ -515,7 +517,7 @@ salary_avgrat <- mean(manager_data$salary)
 
 To find the average salary of those whose rating is average, we can simply find the average salary (overall). This stems from the fact that ![normal_equation](https://latex.codecogs.com/svg.latex?%5Cbar%7BY%7D%20%3D%20b_%7B0%7D%20&plus;%20b_%7B1%7D%5Cbar%7BX%7D), suggesting that ![normal_equation](https://latex.codecogs.com/svg.latex?%5Cbig%28%5Cbar%7BX%7D%2C%5Cbar%7BY%7D%5Cbig%29) is on the regression line.
 
-<b>P14:</b>&nbsp; For the `restauranttips.csv` data set, carry out a regression analysis for tip amount ![Y](https://latex.codecogs.com/svg.latex?%28Y%29) on the amount of the bill ![X](https://latex.codecogs.com/svg.latex?%28X%29). Present a relevant graph, find the regression line, and carry out a t-test to assess whether there is a linear relationship between bill and tip amount. Find a confidence interval for the slope parameter ![Slope_beta](https://latex.codecogs.com/svg.latex?%5Cbeta_%7B1%7D). Predict the average tip for a $40 bill. Find the confidence interval for a $40 bill.
+<b>P14:</b>&nbsp; For the `restauranttips.csv` dataset, carry out a regression analysis for tip amount ![Y](https://latex.codecogs.com/svg.latex?%28Y%29) on the amount of the bill ![X](https://latex.codecogs.com/svg.latex?%28X%29). Present a relevant graph, find the regression line, and carry out a t-test to assess whether there is a linear relationship between bill and tip amount. Find a confidence interval for the slope parameter ![Slope_beta](https://latex.codecogs.com/svg.latex?%5Cbeta_%7B1%7D). Predict the average tip for a $40 bill. Find the confidence interval for a $40 bill.
 
 * Plot
 
